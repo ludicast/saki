@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{saki}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nate Kidwell"]
@@ -23,6 +23,9 @@ Gem::Specification.new do |s|
      "README.markdown",
      "Rakefile",
      "VERSION",
+     "lib/generators/saki/install_generator.rb",
+     "lib/generators/saki/templates/acceptance_helper.rb",
+     "lib/generators/saki/templates/helpers.rb",
      "lib/saki.rb",
      "saki.gemspec",
      "test/helper.rb",
