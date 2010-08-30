@@ -66,6 +66,10 @@ module Saki
       end
     end    
 
+    def index_path_for(model)
+      "/#{model}"
+    end
+
 
     module ClassMethods
       def with_existing resource, &block
@@ -108,7 +112,7 @@ module Saki
           add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).id}/edit", opts, context
         end
       end
-
+      
       def show_path_for(resource, opts = {})
         lambda do |context|
           add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).id}", opts, context
@@ -135,6 +139,18 @@ module Saki
       end
     end
   end
+end
+
+class RSpec::Core::ExampleGroup
+      def method_missing(methId)
+        str = methId.id2name
+        if str.match /(.*)_path/
+          index_path_for($1)
+        else
+          super(methId, [])
+        end
+
+      end
 end
 
 module RSpec::Core::ObjectExtensions
