@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{saki}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nate Kidwell"]
   s.date = %q{2010-08-30}
-  s.description = %q{Cucumber scenarios are lond and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
+  s.description = %q{Cucumber scenarios are long and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
   s.email = %q{nate@ludicast.com}
   s.extra_rdoc_files = [
     "LICENSE",
