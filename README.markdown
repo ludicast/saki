@@ -40,6 +40,20 @@ I feel Saki is much more expressive.
 
 `where` is a function taking as a parameter either a lambda to execute in the before block, or a symbol which is the name of a function to execute in the before block.
 
+    def creating_a_user
+        @user = Factory.build @user
+        fill_in "user[email]", :with => @user.email
+        click_button "Create"
+    end
+
+    on_following_link_to create_path_for(:user) do
+        where :creating_a_user do
+            specify { page.should have_content(@user.email) }
+        end
+    end
+
+Obviously the return for this is where you have functions acting as "reusable steps" in the style of cucumber.
+
 Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance.
 
 ## Installation
