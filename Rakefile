@@ -5,13 +5,12 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "saki"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Allows terse acceptance testing}
+    gem.description = %Q{Cucumber scenarios are lond and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
     gem.email = "nate@ludicast.com"
     gem.homepage = "http://github.com/ludicast/saki"
     gem.authors = ["Nate Kidwell"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.add_development_dependency "rspec"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
