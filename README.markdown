@@ -1,12 +1,14 @@
 # Saki - For times when you can't swallow Cucumber
 
-Saki lets you do acceptance testing on top of RSpec with considerably more terseness than cucumber, but without sacrificing readability.  Are you tired of having DRY code, but tests that seem to babble on "for the length of a bible"?  Me too.  How about RSpec code that is hard to follow, while Ruby itself is as "human" as a programming language can get?  I hate it too.
+Saki lets you do acceptance testing on top of RSpec.  It is considerably more terse than cucumber, but does not sacrifice readability.
+
+Are you tired of having DRY code, but tests that seem to babble on "for the length of a bible"?  Me too.  How about RSpec code that is hard to follow, when Ruby itself is as "human" as a programming language can get?  I hate it too.
 
 Enter Saki stage left.
 
 ## How terse is it?
 
-Well, here's a sample that assumes a user exists and visits an edit path for that user.  Me like.
+Well, here's a sample that sets up contexts that create a user and then visit an edit path for that user.  Me like.
 
 	with_existing :user do
 		on_visiting edit_path_for(:user) do
@@ -24,7 +26,19 @@ This code basically injects some before blocks behind the scene, so it would loo
   		end
 	end
 
-Much more expressive don't you think?  And smooth to follow, no?
+Much more expressive.
+
+## What class-level methods does it use (for setting up contexts)?
+
+`with_existing` takes a factory name as a symbol and assigns it to on instance variable with the same name.
+
+`on_visiting` takes a path either as a string or as a lambda that executes within a before block to set up the path.  This is useful when the code is dependent on an instance variable for path creation.
+
+`on_visiting` has several helper functions for establishing a path: create_path_for, index_path_for, edit_path_for, show_path_for and new_path_for.  These paths all take resource names for establishing a path.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
+
+    on_visiting index_path_for(:auction)
+
+where is a function taking as a parameter either a lambda to execute in the before block, or a symbol which is the name of a function to execute in the before block.
 
 ## What assumptions does it make?  
 

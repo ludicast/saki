@@ -133,4 +133,12 @@ module Saki
   end
 end
 
+module RSpec::Core::ObjectExtensions
+  def integrate(*args, &block)
+    args << {} unless args.last.is_a?(Hash)
+    args.last.update :type => :acceptance
+    describe(*args, &block)
+  end
+end
+
 RSpec.configuration.include Saki::AcceptanceHelpers, :type => :acceptance
