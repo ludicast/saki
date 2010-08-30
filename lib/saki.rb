@@ -5,43 +5,37 @@ module Saki
     def default_factory(name)
       Factory name
     end
-    def has_link_for(model, opts = {})
-      href = "/#{model.class.to_s.tableize}/#{model.id}"
+
+    def add_opts(link, opts)
       if opts[:parent]
-        href =  "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + href
+        "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + link
+      else
+        link
       end
+    end
+
+    def has_link_for(model, opts = {})
+      href = add_opts "/#{model.class.to_s.tableize}/#{model.id}", opts
       page.should have_xpath("//a[@href='#{href}' and not(@rel)]")
     end
 
     def has_link_for_editing(model, opts = {})
-      href = "/#{model.class.to_s.tableize}/#{model.id}/edit"
-      if opts[:parent]
-        href =  "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + href
-      end
+      href = add_opts "/#{model.class.to_s.tableize}/#{model.id}/edit", opts
       page.should have_xpath("//a[@href='#{href}']")
     end
 
     def has_link_for_deleting(model, opts = {})
-      href = "/#{model.class.to_s.tableize}/#{model.id}"
-      if opts[:parent]
-        href =  "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + href
-      end
+      href = add_opts "/#{model.class.to_s.tableize}/#{model.id}", opts
       page.should have_xpath("//a[@href='#{href}' and @data-method='delete']")
     end
 
     def has_link_for_creating(model_type, opts = {})
-      href = "/#{model_type.to_s.tableize}/new"
-      if opts[:parent]
-        href =  "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + href
-      end
+      href = add_opts "/#{model_type.to_s.tableize}/new", opts
       page.should have_xpath("//a[@href='#{href}']")
     end
 
     def has_link_for_indexing(model_type, opts = {})
-      href = "/#{model_type.to_s.tableize}"
-      if opts[:parent]
-        href =  "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + href
-      end
+      href = add_opts "/#{model_type.to_s.tableize}", opts
       page.should have_xpath("//a[@href='#{href}']")
     end  
 
@@ -122,6 +116,5 @@ module Saki
     end
   end
 end
-
 
 RSpec.configuration.include Saki::AcceptanceHelpers, :type => :acceptance
