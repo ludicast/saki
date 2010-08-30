@@ -1,3 +1,5 @@
+require 'rspec/core'
+
 module Saki
   module AcceptanceHelpers
     extend ActiveSupport::Concern
@@ -123,9 +125,13 @@ module Saki
         end
       end
 
-      def where(closure, &block)
+      def where(executable, &block)
         context "anonymous closure" do
-          before { instance_eval &closure }
+          if executable.is_a? Symbol
+            before { send executable }
+          else
+            before { instance_eval &executable }
+          end
           module_eval &block
         end
       end
@@ -140,5 +146,7 @@ module RSpec::Core::ObjectExtensions
     describe(*args, &block)
   end
 end
+
+
 
 RSpec.configuration.include Saki::AcceptanceHelpers, :type => :acceptance

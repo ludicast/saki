@@ -8,7 +8,7 @@ Enter Saki stage left.
 
 ## How terse is it?
 
-Well, here's a sample that sets up contexts that create a user and then visit an edit path for that user.  Me like.
+Well, here's a sample that sets up contexts that create a user and then visit an edit path for that user.
 
 	with_existing :user do
 		on_visiting edit_path_for(:user) do
@@ -16,7 +16,7 @@ Well, here's a sample that sets up contexts that create a user and then visit an
 		end
 	end
 
-This code basically injects some before blocks behind the scene, so it would look like this in vanilla RSpec:
+This code basically injects some "before blocks", so it would look like this in vanilla RSpec:
 
 	context "when a user exists" do
 		before { @user = Factory :user }
@@ -26,7 +26,7 @@ This code basically injects some before blocks behind the scene, so it would loo
   		end
 	end
 
-Much more expressive.
+I feel Saki is much more expressive.
 
 ## What class-level methods does it use (for setting up contexts)?
 
@@ -34,15 +34,29 @@ Much more expressive.
 
 `on_visiting` takes a path either as a string or as a lambda that executes within a before block to set up the path.  This is useful when the code is dependent on an instance variable for path creation.
 
-`on_visiting` has several helper functions for establishing a path: create_path_for, index_path_for, edit_path_for, show_path_for and new_path_for.  These paths all take resource names for establishing a path.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
+`on_visiting` has several helper functions for establishing a path: `create_path_for`, `index_path_for`, `edit_path_for`, `show_path_for` and `new_path_for`.  These paths all take resource names for establishing a path.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
 
     on_visiting index_path_for(:auction)
 
-where is a function taking as a parameter either a lambda to execute in the before block, or a symbol which is the name of a function to execute in the before block.
+`where` is a function taking as a parameter either a lambda to execute in the before block, or a symbol which is the name of a function to execute in the before block.
 
+Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance.
+
+## Installation
+
+Saki installs with two steps.  First, add to your Gemfile:
+
+    gem 'saki'
+
+Then to fill out the directories run:
+
+    rails generate saki:install
+
+Then, as long as your acceptance specs require the acceptance_helper file you should be good to go.
+    
 ## What assumptions does it make?  
 
-It assumes that you are using factory_girl and capybara, though it probably would work fine with other test factories and webrat.  If you need another factory in the mix, just redefine the default_factory method to behave how you want.
+It assumes that you are using factory_girl and capybara or webrat, though it probably would work fine with other test factories.  If you need another factory in the mix, just redefine the `default_factory` method to behave how you want.
 
 ## Note on Patches/Pull Requests
  
