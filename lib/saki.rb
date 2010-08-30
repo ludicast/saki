@@ -8,6 +8,16 @@ module Saki
       Factory name
     end
 
+    def get_path(path)
+      if path.is_a? String
+        path
+      elsif path.is_a? Symbol
+        send path
+      else
+        path.call(self)
+      end
+    end
+
     def add_opts(link, opts)
       if opts[:parent]
         link = "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + link
@@ -68,11 +78,7 @@ module Saki
       def on_following_link_to path, &block
         context "on following link" do
           before do
-            if path.is_a? String
-              path = path
-            else
-              path =  path.call(self)
-            end
+            path = get_path(path)
             has_link(path)
             visit path
           end
@@ -83,11 +89,7 @@ module Saki
       def on_visiting path, &block
         context "on visiting" do
           before do
-            if path.is_a? String
-              visit path
-            else
-              visit path.call(self)
-            end
+            visit get_path(path)
           end
           module_eval &block
         end
@@ -125,13 +127,9 @@ module Saki
         end
       end
 
-      def where(executable, &block)
+      def where(executable, *opts, &block)
         context "anonymous closure" do
-          if executable.is_a? Symbol
-            before { send executable }
-          else
-            before { instance_eval &executable }
-          end
+          before { instance_eval &executable }
           module_eval &block
         end
       end

@@ -2,7 +2,7 @@
 
 Saki lets you do acceptance testing on top of RSpec.  It is considerably more terse than Cucumber, but does not sacrifice readability.  Saki also does not use Given/When/Then syntax because the thought is that there is little return other than familiarity for Cucumber users.
 
-Are you tired of having DRY code, but tests that seem to babble on "for the length of a bible"?  Me too.  How about RSpec code that is hard to follow, when Ruby itself is as "human" as a programming language can get?  I hate it too.
+Are you tired of having DRY code, but tests that seem to babble on "for the length of a bible"?  Me too.  How about RSpec code that is hard to follow, when Ruby itself is simple to follow?  I hate it too.
 
 Enter Saki stage left.
 
@@ -33,13 +33,25 @@ I believe the Saki example has the following benefits:
 * It is much more expressive.  You read the test and you immediately know what it does.
 * Any exceptions to the rule (complicated setups, etc.) now stick out like sore thumbs, as they should.
 
-The only assumption is that you are using factories instead of fixtures.  You also get more out of it in a RESTful application.
+The only assumption is that you are using factories instead of fixtures.  You also get more out of it in a conventional RESTful application.
 
 ## What class-level methods does it use (for setting up contexts)?
 
-`with_existing` takes a factory name as a symbol and assigns it to on instance variable with the same name.
+`with_existing` takes a factory name as a symbol and assigns its created object to on instance variable with the same name.
 
-`on_visiting` takes a path either as a string or as a lambda that executes within a before block to set up the path.  This is useful when the code is dependent on an instance variable for path creation.
+`on_visiting` takes a path as a string, or a lambda that executes within a before block to set up the path.  It also takes a symbol which is the name of a method name.  This is useful when the code is dependent on an instance variable for path creation.
+
+    path_for_user = lambda { user_path(@user) }
+
+    on_visiting path_for_user do ...
+
+or you can do
+
+    def my_user_path
+        user_path(@user)
+    end
+
+    on_visiting :my_user_path do ...
 
 `on_visiting` has several helper functions for establishing a path: `create_path_for`, `index_path_for`, `edit_path_for`, `show_path_for` and `new_path_for`.  These paths all take resource names for establishing a path.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
 
@@ -47,21 +59,23 @@ The only assumption is that you are using factories instead of fixtures.  You al
 
 `on_following_link_to` works the same as on_visiting, but it first validates that the link exists, and then follows it.
 
-`where` is a function taking as a parameter either a lambda to execute in the before block, or a symbol which is the name of a function to execute in the before block.
+`where` is a function taking as a parameter lambda to execute in the before block.
 
-    def creating_a_user
-        @user = Factory.build @user
-        fill_in "user[email]", :with => @user.email
-        click_button "Create"
+    def self.creating_a_user
+        lambda {
+            @user = Factory.build @user
+            fill_in "user[email]", :with => @user.email
+            click_button "Create"
+        }
     end
 
     on_following_link_to create_path_for(:user) do
-        where :creating_a_user do
+        where creating_a_user do
             specify { page.should have_content(@user.email) }
         end
     end
 
-Obviously the return for this is where you have functions acting as "reusable steps" in the style of cucumber.
+Obviously the return for this is where you have functions acting as "reusable steps" in the style of Cucumber.  In addition your "before blocks" are more expressive.
 
 Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance.
 
