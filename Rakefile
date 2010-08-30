@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "saki"
     gem.summary = %Q{Allows terse acceptance testing}
-    gem.description = %Q{Cucumber scenarios are lond and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
+    gem.description = %Q{Cucumber scenarios are long and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
     gem.email = "nate@ludicast.com"
     gem.homepage = "http://github.com/ludicast/saki"
     gem.authors = ["Nate Kidwell"]

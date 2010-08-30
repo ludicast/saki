@@ -8,10 +8,16 @@ module Saki
 
     def add_opts(link, opts)
       if opts[:parent]
-        "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + link
-      else
-        link
+        link = "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + link
       end
+      if opts[:format]
+        link = link + ".#{opts[:format]}"
+      end
+      link
+    end
+
+    def has_link(href)
+      page.should have_xpath("//a[@href='#{href}']")
     end
 
     def has_link_for(model, opts = {})
@@ -21,7 +27,7 @@ module Saki
 
     def has_link_for_editing(model, opts = {})
       href = add_opts "/#{model.class.to_s.tableize}/#{model.id}/edit", opts
-      page.should have_xpath("//a[@href='#{href}']")
+      has_link href
     end
 
     def has_link_for_deleting(model, opts = {})
@@ -31,13 +37,23 @@ module Saki
 
     def has_link_for_creating(model_type, opts = {})
       href = add_opts "/#{model_type.to_s.tableize}/new", opts
-      page.should have_xpath("//a[@href='#{href}']")
+      has_link href
     end
 
     def has_link_for_indexing(model_type, opts = {})
       href = add_opts "/#{model_type.to_s.tableize}", opts
-      page.should have_xpath("//a[@href='#{href}']")
+      has_link href
     end  
+
+    def should_be_on(page_name)
+      current_path = URI.parse(current_url).path
+      if page_name.is_a? String
+        current_path.should == page_name
+      else
+        current_path.should match(page_name)
+      end
+    end    
+
 
     module ClassMethods
       def with_existing resource, &block
