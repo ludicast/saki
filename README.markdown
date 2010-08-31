@@ -1,10 +1,10 @@
 # Saki - For times when you can't swallow Cucumber
 
-Saki lets you do acceptance testing on top of RSpec.  It is considerably more terse than Cucumber, but does not sacrifice readability.  Saki also does not use Given/When/Then syntax because the thought is that there is little return other than familiarity for Cucumber users.
-
-Are you tired of having DRY code, but tests that seem to babble on "for the length of a bible"?  Me too.  How about RSpec code that is hard to follow, when Ruby itself is simple to follow?  I hate it too.
+Are you tired of having DRY code, but tests that seem to babble on "for the length of a bible"?  Me too.  How about test code that is hard to follow, when Ruby itself is clear as day?  I hate it too.
 
 Enter Saki stage left.
+
+Saki lets you do acceptance testing on top of RSpec.  It is considerably more terse than Cucumber, but does not sacrifice readability.  Saki also does not use Given/When/Then syntax because the thought is that there is little return other than familiarity for Cucumber users.
 
 ## How terse is it?
 
@@ -26,18 +26,18 @@ This code basically injects some "before blocks", so it would look like this in 
   		end
 	end
 
-I believe the Saki example has the following benefits:
+I believe the Saki example has the following benefits over vanilla RSpec:
 
 * It saves two lines of code.
-* It standardizes the code.  Whereas a context string might accidentally get out of sync with the code (unmaintained comments, anyone), with Saki this would probably cause a test to fail.
+* It standardizes the code.  Whereas a context string might accidentally get out of sync with the code (unmaintained comments, anyone?), with Saki this would probably cause a test to fail.
 * It is much more expressive.  You read the test and you immediately know what it does.
 * Any exceptions to the rule (complicated setups, etc.) now stick out like sore thumbs, as they should.
 
-The only assumption is that you are using factories instead of fixtures.  You also get more out of it in a conventional RESTful application.
+The only assumption is that you are using factories instead of fixtures.  You also get more out of it in a conventional RESTful application, where the paths don't have too many gotchas.
 
 ## What class-level methods does it use (for setting up contexts)?
 
-`with_existing` takes a factory name as a symbol and assigns its created object to on instance variable with the same name.  It also take options so you can have block start with:
+`with_existing` takes a factory name as a symbol and assigns its created object to on instance variable with the same name.  It also takes options so you can have blocks start with:
 
     with_existing :user, :state => "happy" do...
 
@@ -61,7 +61,7 @@ or you can do
 
 `on_following_link_to` works the same as on_visiting, but it first validates that the link exists, and then follows it.
 
-`where` is a function taking as a parameter lambda to execute in the before block.
+`where` is a function taking as a parameter a lambda to execute in the before block.
 
     def self.creating_a_user
         lambda {
@@ -79,7 +79,7 @@ or you can do
 
 Obviously the return for this is where you have functions acting as "reusable steps" in the style of Cucumber.  In addition your "before blocks" are more expressive.
 
-Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance. This is the default function of the generators, but feel free to use the regular describe block as long as you set its :type option to :acceptance.
+Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance. This is the default `describe` function of the generators, but feel free to use the regular describe block as long as you set its :type option to :acceptance.
 
 ## Installation
 
@@ -92,7 +92,11 @@ Then to fill out the directories run:
     rails generate saki:install
 
 Then, as long as your acceptance specs require the acceptance_helper file you should be good to go.
+
+You can generate new tasks with
+
     
+
 ## What assumptions does it make?  
 
 It assumes that you are using factory_girl and capybara or webrat, though it probably would work fine with other test factories.  If you need another factory in the mix, just redefine the `default_factory` method to behave how you want.
