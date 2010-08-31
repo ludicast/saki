@@ -93,9 +93,28 @@ Then to fill out the directories run:
 
 Then, as long as your acceptance specs require the acceptance_helper file you should be good to go.
 
-You can generate new tasks with
+You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.  This automatically generates tests like
 
-    
+    require File.dirname(__FILE__) + '/acceptance_helper'
+
+    integrate "author resource" do
+
+        on_visiting new_author_path do
+            specify { fail "not implemented" }
+        end
+
+        with_existing :author do
+            on_visiting edit_author_path do
+                specify { fail "not implemented" }
+            end
+            on_visiting author_path do
+                specify { fail "not implemented" }
+            end
+            on_visiting authors_path do
+                specify { fail "not implemented" }
+            end
+        end
+    end
 
 ## What assumptions does it make?  
 
@@ -107,7 +126,7 @@ The motivation behind my migration from Cucumber and to Saki, are described in b
 
 ## Thanks
 
-The generators are stolen directly from Steak with some minor adjustments.
+The generators are stolen directly from Steak with some adjustments.
 
 ## Note on Patches/Pull Requests
  
