@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/acceptance_helper'
 
-integrate <%= resource_name %> do
+integrate "<%= resource_name %> resource" do
 
   on_visiting new_<%= resource_name %>_path do
     specify { fail "not implemented" }
