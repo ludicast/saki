@@ -67,7 +67,7 @@ module Saki
     end
 
     module ClassMethods
-      def with_existing resource, opts={} &block
+      def with_existing resource, opts={}, &block
         context "with exisiting #{resource}" do
           before do
             instance_variable_set "@#{resource}", default_factory(resource, opts)
