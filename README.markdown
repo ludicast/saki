@@ -31,7 +31,7 @@ I believe the Saki example has the following benefits over vanilla RSpec:
 * It saves two lines of code.
 * It standardizes the code.  Whereas a context string might accidentally get out of sync with the code (unmaintained comments, anyone?), with Saki this would probably cause a test to fail.
 * It is much more expressive.  You read the test and you immediately know what it does.
-* Any exceptions to the rule (complicated setups, etc.) now stick out like sore thumbs, as they should.
+* Any exceptions to the rule (complicated setups, etc.) would now stick out like sore thumbs, as they should.
 
 The only assumption is that you are using factories instead of fixtures.  You also get more out of it in a conventional RESTful application, where the paths don't have too many gotchas.
 
