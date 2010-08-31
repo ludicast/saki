@@ -4,8 +4,8 @@ module Saki
   module AcceptanceHelpers
     extend ActiveSupport::Concern
 
-    def default_factory(name)
-      Factory name
+    def default_factory(name, opts = {})
+      Factory name, opts
     end
 
     def get_path(path)
@@ -18,7 +18,7 @@ module Saki
       end
     end
 
-    def add_opts(link, opts)
+    def add_opts(link, opts = {})
       if opts[:parent]
         link = "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + link
       end
@@ -64,17 +64,14 @@ module Saki
       else
         current_path.should match(page_name)
       end
-    end    
-
-    def index_path_for(model)
-      "/#{model}"
     end
 
-
     module ClassMethods
-      def with_existing resource, &block
+      def with_existing resource, opts={} &block
         context "with exisiting #{resource}" do
-          before { eval "@#{resource} = default_factory :#{resource}" }
+          before do
+            instance_variable_set "@#{resource}", default_factory(resource, opts)
+          end
           module_eval &block
         end
       end
@@ -99,6 +96,7 @@ module Saki
         end
       end
 
+
       def add_opts(link, opts, context)
         if opts[:parent]
           "/#{opts[:parent].to_s.pluralize}/#{(context.instance_variable_get('@' + opts[:parent].to_s)).id}" + link
@@ -112,7 +110,7 @@ module Saki
           add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).id}/edit", opts, context
         end
       end
-      
+
       def show_path_for(resource, opts = {})
         lambda do |context|
           add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).id}", opts, context
@@ -142,15 +140,43 @@ module Saki
 end
 
 class RSpec::Core::ExampleGroup
-      def method_missing(methId)
+
+      def self.method_missing(methId, *args)
+        parse_opts = lambda {|link , opts, context|
+          opts ||= {}
+          if opts[:parent]
+            "/#{opts[:parent].to_s.pluralize}/#{(context.instance_variable_get('@' + opts[:parent].to_s)).id}" + link
+          else
+            link
+          end
+        }
+
         str = methId.id2name
-        if str.match /(.*)_path/
-          index_path_for($1)
+        if str.match /new_(.*)_path/
+             lambda { |context|
+               parse_opts.call "/#{$1.pluralize}/new", args.first, context
+             }
+        elsif str.match /edit_(.*)_path/
+            lambda { |context|
+                model = context.instance_variable_get "@#{$1}"
+                parse_opts.call "/#{model.class.to_s.tableize}/#{model.id}/edit", args.first, context
+            }
+        elsif str.match /(.*)_path/
+          pluralized = $1.pluralize
+          if pluralized == $1
+            lambda { |context|  parse_opts.call "/#{$1}", args.first, context }
+          else
+            lambda { |context|
+                model = context.instance_variable_get "@#{$1}"
+                parse_opts.call "/#{model.class.to_s.tableize}/#{model.id}", args.first, context
+            }
+          end
         else
           super(methId, [])
         end
 
       end
+
 end
 
 module RSpec::Core::ObjectExtensions
@@ -160,7 +186,5 @@ module RSpec::Core::ObjectExtensions
     describe(*args, &block)
   end
 end
-
-
 
 RSpec.configuration.include Saki::AcceptanceHelpers, :type => :acceptance

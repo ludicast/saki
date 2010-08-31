@@ -11,7 +11,7 @@ Enter Saki stage left.
 Well, here's a sample that sets up contexts that create a user and then visit an edit path for that user.
 
 	with_existing :user do
-		on_visiting edit_path_for(:user) do
+		on_visiting edit_user_path do
 			it { should let_me_edit(@user) }
 		end
 	end
@@ -37,7 +37,9 @@ The only assumption is that you are using factories instead of fixtures.  You al
 
 ## What class-level methods does it use (for setting up contexts)?
 
-`with_existing` takes a factory name as a symbol and assigns its created object to on instance variable with the same name.
+`with_existing` takes a factory name as a symbol and assigns its created object to on instance variable with the same name.  It also take options so you can have block start with:
+
+    with_existing :user, :state => "happy" do...
 
 `on_visiting` takes a path as a string, or a lambda that executes within a before block to set up the path.  It also takes a symbol which is the name of a method name.  This is useful when the code is dependent on an instance variable for path creation.
 
@@ -53,9 +55,9 @@ or you can do
 
     on_visiting :my_user_path do ...
 
-`on_visiting` has several helper functions for establishing a path: `create_path_for`, `index_path_for`, `edit_path_for`, `show_path_for` and `new_path_for`.  These paths all take resource names for establishing a path.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
+`on_visiting` dynamically uses some functions for establishing a path: `new_X_path`, `Xs_path`, `edit_X_path`, `X_path` and `new_X_path`.  In these cases, substitute X for the resource name.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
 
-    on_visiting index_path_for(:auction)
+    on_visiting auctions_path(:parent => :user) do ...
 
 `on_following_link_to` works the same as on_visiting, but it first validates that the link exists, and then follows it.
 
@@ -77,7 +79,7 @@ or you can do
 
 Obviously the return for this is where you have functions acting as "reusable steps" in the style of Cucumber.  In addition your "before blocks" are more expressive.
 
-Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance.
+Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance. This is the default function of the generators, but feel free to use the regular describe block as long as you set its :type option to :acceptance.
 
 ## Installation
 
