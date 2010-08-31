@@ -35,13 +35,17 @@ I believe the Saki example has the following benefits over vanilla RSpec:
 
 The only assumption is that you are using factories instead of fixtures.  You also get more out of it in a conventional RESTful application, where the paths don't have too many gotchas.
 
-## What class-level methods does it use (for setting up contexts)?
+## Methods provided for setting up contexts
 
-`with_existing` takes a factory name as a symbol and assigns its created object to on instance variable with the same name.  It also takes options so you can have blocks start with:
+`with_existing` takes a factory name as a symbol and assigns its created object to an instance variable with the same name.  It also takes options so you can have blocks start with:
 
     with_existing :user, :state => "happy" do...
 
-`on_visiting` takes a path as a string, or a lambda that executes within a before block to set up the path.  It also takes a symbol which is the name of a method name.  This is useful when the code is dependent on an instance variable for path creation.
+`on_visiting` preferably uses some dynamic functions for establishing a path: `new_X_path`, `Xs_path`, `edit_X_path`, `X_path` and `new_X_path`.  In these cases, substitute X for the resource name (e.g. `new_user_path`).  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
+
+    on_visiting auctions_path(:parent => :user) do ...
+
+`on_visiting` also takes a path as a string, or a lambda that executes within a before block to set up the path.  It also takes a symbol which is the name of a method name.  This is useful when the code is dependent on an instance variable for path creation.
 
     path_for_user = lambda { user_path(@user) }
 
@@ -55,10 +59,6 @@ or you can do
 
     on_visiting :my_user_path do ...
 
-`on_visiting` dynamically uses some functions for establishing a path: `new_X_path`, `Xs_path`, `edit_X_path`, `X_path` and `new_X_path`.  In these cases, substitute X for the resource name.  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
-
-    on_visiting auctions_path(:parent => :user) do ...
-
 `on_following_link_to` works the same as on_visiting, but it first validates that the link exists, and then follows it.
 
 `where` is a function taking as a parameter a lambda to execute in the before block.
@@ -71,7 +71,7 @@ or you can do
         }
     end
 
-    on_following_link_to create_path_for(:user) do
+    on_following_link_to new_user_path do
         where creating_a_user do
             specify { page.should have_content(@user.email) }
         end
@@ -90,8 +90,6 @@ Saki installs with two steps.  First, add to your Gemfile:
 Then to fill out the directories run:
 
     rails generate saki:install
-
-Then, as long as your acceptance specs require the acceptance_helper file you should be good to go.
 
 You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.  This automatically generates tests like
 
@@ -115,10 +113,6 @@ You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.
             end
         end
     end
-
-## What assumptions does it make?  
-
-It assumes that you are using factory_girl and capybara or webrat, though it probably would work fine with other test factories.  If you need another factory in the mix, just redefine the `default_factory` method to behave how you want.
 
 ## References
 
