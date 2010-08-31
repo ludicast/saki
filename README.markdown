@@ -21,7 +21,7 @@ This code basically injects some "before blocks", so it would look like this in 
 	context "a user exists" do
 		before { @user = Factory :user }
 		context "I visit the page for editing that user" do
-			before { visit edit_user_path(:user) }
+			before { visit "/users/#{@user.id}/user" }
 			it { should let_me_edit(@user) }
   		end
 	end
