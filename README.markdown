@@ -114,6 +114,14 @@ You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.
         end
     end
 
+## Why no specs/test for Saki, oh test guy?
+
+They'll get there :).  Saki is extracted from some spec helpers I used in moving from Cucumber to Steak.  Once I realized they also work as helpers for vanilla RSpec acceptance testing I made them a separate gem.
+
+## Why ugly textual test output?
+
+I haven't pimped that up yet, but will at some point.  Personally I'm a "green-dot" guy and just care what line a test fails on.
+
 ## References
 
 The motivation behind my migration from Cucumber and to Saki, are described in blog posts [Encumbered by Cucumber](http://ludicast.com/articles/1), [Introducing Saki](http://ludicast.com/articles/2).
