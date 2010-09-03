@@ -41,7 +41,11 @@ The only assumption is that you are using factories instead of fixtures.  You al
 
     with_existing :user, :state => "happy" do...
 
-`on_visiting` preferably uses some dynamic functions for establishing a path: `new_X_path`, `Xs_path`, `edit_X_path`, `X_path` and `new_X_path`.  In these cases, substitute X for the resource name (e.g. `new_user_path`).  In cases where the resource is nested, it has a :parent => parent_resource option.  This lets you set up blocks like:
+`on_visiting` preferably uses some dynamic functions for establishing a path: `new_X_path`, `Xs_path`, `edit_X_path`, `X_path` and `new_X_path`.  In these cases, substitute X for the resource name (e.g. `new_user_path`).  
+
+Note that for examples like `edit_user_path`, it behaves with a slight difference from the rails route helpers, because it assumes that there already exists an instance variable named `@user`.  Since the `edit_user_path` call occurs when there is no `@user`, we can't mention it explicitly.
+
+For cases where the resource is nested, these path helpers have a :parent => parent_resource option.  This lets you set up blocks like:
 
     on_visiting auctions_path(:parent => :user) do ...
 
@@ -114,11 +118,11 @@ You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.
         end
     end
 
-## Why no specs/test for Saki, oh test guy?
+## Why no specs/tests for Saki, oh test guy?
 
 They'll get there :).  Saki is extracted from some spec helpers I used in moving from Cucumber to Steak.  Once I realized they also work as helpers for vanilla RSpec acceptance testing I made them a separate gem.
 
-## Why ugly textual test output?
+## Why is there ugly?
 
 I haven't pimped that up yet, but will at some point.  Personally I'm a "green-dot" guy and just care what line a test fails on.
 
