@@ -122,7 +122,7 @@ You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.
 
 They'll get there :).  Saki is extracted from some spec helpers I used in moving from Cucumber to Steak.  Once I realized they also work as helpers for vanilla RSpec acceptance testing I made them a separate gem.
 
-## Why is there ugly?
+## Why are there ugly command-line descriptions?
 
 I haven't pimped that up yet, but will at some point.  Personally I'm a "green-dot" guy and just care what line a test fails on.
 
