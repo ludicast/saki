@@ -1,12 +1,35 @@
 require 'rspec/core'
 
 module Saki
-  module AcceptanceHelpers
-    extend ActiveSupport::Concern
-
+  module GeneralHelpers
+    extend ActiveSupport::Concern    
     def default_factory(name, opts = {})
       Factory name, opts
     end
+
+    module ClassMethods
+      def with_existing resource, opts={}, &block
+        context "with exisiting #{resource}" do
+          before do
+            instance_variable_set "@#{resource}", default_factory(resource, opts)
+          end
+          module_eval &block
+        end
+      end
+
+      def where(executable, *opts, &block)
+        context "anonymous closure" do
+          before { instance_eval &executable }
+          module_eval &block
+        end
+      end      
+    end
+
+  end
+
+  module AcceptanceHelpers
+    extend ActiveSupport::Concern
+
 
     def get_path(path)
       if path.is_a? String
@@ -67,15 +90,6 @@ module Saki
     end
 
     module ClassMethods
-      def with_existing resource, opts={}, &block
-        context "with exisiting #{resource}" do
-          before do
-            instance_variable_set "@#{resource}", default_factory(resource, opts)
-          end
-          module_eval &block
-        end
-      end
-
       def on_following_link_to path, &block
         context "on following link" do
           before do
@@ -126,13 +140,6 @@ module Saki
       def index_path_for(resource, opts = {})
         lambda do |context|
           add_opts "/#{resource.to_s.pluralize}", opts, context
-        end
-      end
-
-      def where(executable, *opts, &block)
-        context "anonymous closure" do
-          before { instance_eval &executable }
-          module_eval &block
         end
       end
     end
@@ -187,4 +194,5 @@ module RSpec::Core::ObjectExtensions
   end
 end
 
+RSpec.configuration.include Saki::GeneralHelpers
 RSpec.configuration.include Saki::AcceptanceHelpers, :type => :acceptance
