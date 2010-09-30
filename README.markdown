@@ -41,6 +41,10 @@ The only assumption is that you are using factories instead of fixtures.  You al
 
     with_existing :user, :state => "happy" do...
 
+`with_signed_in` is similar to `with_existing` but after creating the object it passes it into a `sign_in` method:
+
+    with_signed_in :admin do...
+
 `on_visiting` preferably uses some dynamic functions for establishing a path: `new_X_path`, `Xs_path`, `edit_X_path`, `X_path` and `new_X_path`.  In these cases, substitute X for the resource name (e.g. `new_user_path`).  
 
 Note that for examples like `edit_user_path`, it behaves with a slight difference from the rails route helpers, because it assumes that there already exists an instance variable named `@user`.  Since the `edit_user_path` call occurs when there is no `@user`, we can't mention it explicitly.
@@ -49,9 +53,9 @@ For cases where the resource is nested, these path helpers have a :parent => par
 
     on_visiting auctions_path(:parent => :user) do ...
 
-`on_visiting` also takes a path as a string, or a lambda that executes within a before block to set up the path.  It also takes a symbol which is the name of a method name.  This is useful when the code is dependent on an instance variable for path creation.
+`on_visiting` also takes a path as a string, or a proc that executes within a before block to set up the path.  It also takes a symbol which is the name of a method name.  This is useful when the code is dependent on an instance variable for path creation.
 
-    path_for_user = lambda { user_path(@user) }
+    path_for_user = proc { user_path(@user) }
 
     on_visiting path_for_user do ...
 
@@ -65,10 +69,10 @@ or you can do
 
 `on_following_link_to` works the same as on_visiting, but it first validates that the link exists, and then follows it.
 
-`where` is a function taking as a parameter a lambda to execute in the before block.
+`where` is a function taking as a parameter a proc to execute in the before block.
 
     def self.creating_a_user
-        lambda {
+        proc {
             @user = Factory.build @user
             fill_in "user[email]", :with => @user.email
             click_button "Create"
@@ -129,6 +133,10 @@ I haven't pimped that up yet, but will at some point.  Personally I'm a "green-d
 ## References
 
 The motivation behind my migration from Cucumber and to Saki, are described in blog posts [Encumbered by Cucumber](http://ludicast.com/articles/1), [Introducing Saki](http://ludicast.com/articles/2).
+
+## Ruby 1.9.2
+
+To work with Ruby 1.9.2 the `where` function take procs but not lambdas.
 
 ## Thanks
 
