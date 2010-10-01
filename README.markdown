@@ -136,7 +136,7 @@ The motivation behind my migration from Cucumber and to Saki, are described in b
 
 ## Ruby 1.9.2
 
-To work with Ruby 1.9.2 the `where` function take procs but not lambdas.
+To work with Ruby 1.9.2 the `where` function takes procs but not lambdas.
 
 ## Thanks
 
