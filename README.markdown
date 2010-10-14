@@ -122,6 +122,14 @@ You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.
         end
     end
 
+## Saki as your default integration testing library
+
+If you want to use Saki for generating integration tests for your scaffolding, simply add to your development.rb file
+
+    require "generators/saki/integration_generator"
+
+Then, provided that your integration library is set to :rspec, Saki will create integration tests for your scaffolding for complete test coverage.  Note that these cases are left simple for now, but can be built up upon fedback.
+
 ## Why no specs/tests for Saki, oh test guy?
 
 They'll get there :).  Saki is extracted from some spec helpers I used in moving from Cucumber to Steak.  Once I realized they also work as helpers for vanilla RSpec acceptance testing I made them a separate gem.
