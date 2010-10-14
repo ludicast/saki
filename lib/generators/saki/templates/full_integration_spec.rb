@@ -1,32 +1,19 @@
 require File.dirname(__FILE__) + '/acceptance_helper'
-<%-
-  extend SchemaUtil
-  for_base do
-    resource_class = resource_name.classify.constantize
-    @pairs = resource_class.columns_hash.map do |key, value|
-      [key.to_s, value.type.to_s]
-    end
-  end
 
-%>
 integrate "<%= resource_name %> resource" do
 
   def fill_in_<%= resource_name %>_details<%-
-      @pairs.each do |pair|
-        unless ["id", "created_at", "updated_at"].include? pair[0] 
+      attributes.each do |attribute|
     %>
-    fill_in "<%= resource_name %>[<%= pair[0] %>]", :with => @<%= resource_name %>.<%= pair[0] %><%-
-        end
+    fill_in "<%= resource_name %>[<%= attribute.name %>]", :with => @<%= resource_name %>.<%= attribute.name %><%-
       end
     %>
   end 
 
   def has_<%= resource_name %>_details<%-
-      @pairs.each do |pair|
-        unless ["id", "created_at", "updated_at"].include? pair[0]
+      attributes.each do |attribute|
     %>
-    page.should have_content(@<%= resource_name %>.<%= pair[0] %>)<%-
-        end
+    page.should have_content(@<%= resource_name %>.<%= attribute.name %>)<%-
       end
     %>
   end

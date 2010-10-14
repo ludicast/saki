@@ -1,5 +1,4 @@
 require 'rspec/core'
-require 'saki/railtie'
 
 module Saki
 
