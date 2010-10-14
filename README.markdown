@@ -128,7 +128,7 @@ If you want to use Saki for generating integration tests for your scaffolding, s
 
     require "generators/saki/integration_generator"
 
-Then, provided that your integration library is set to :rspec, Saki will create integration tests for your scaffolding for complete test coverage.  Note that these cases are left simple for now, but can be built up upon fedback.
+Then, provided that your integration library is set to :rspec, Saki will create integration tests for your scaffolding for complete test coverage.  Note that these cases are left simple for now, but can be built up upon feedback.  Also you might need to implement additional functions depending on your use case.
 
 ## Why no specs/tests for Saki, oh test guy?
 
