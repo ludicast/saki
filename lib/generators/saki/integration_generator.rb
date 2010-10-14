@@ -1,5 +1,4 @@
 require 'generators/rspec/integration/integration_generator'
-puts "loading rspec generator"
 
 module Rspec
   module Generators
