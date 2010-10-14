@@ -1,6 +1,8 @@
 require 'rspec/core'
+require 'saki/railtie'
 
 module Saki
+
   module GeneralHelpers
     extend ActiveSupport::Concern    
     def default_factory(name, opts = {})
