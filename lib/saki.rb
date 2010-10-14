@@ -1,9 +1,96 @@
 require 'rspec/core'
 
 module Saki
+  module RestfulPathwayHelpers
+    def shows_in_list(resource, attrs = nil)
+      visit "/#{resource.to_s.pluralize}"
+      resource_instance = eval "@#{resource}"
+      if attrs
+        attrs.each do |attr|
+          page.should have_content(resource_instance.send(attr))
+        end
+      elsif respond_to?("displays_#{resource}")
+        send "displays_#{resource}"
+      else
+        page.should have_content(resource_instance.name)
+      end
+      has_index_link_list(resource_instance)
+    end
+
+    def has_index_link_list(item, opts = {})
+      has_link_for item, opts
+      has_link_for_editing item, opts
+      has_link_for_deleting item, opts
+      has_link_for_creating item.class.to_s.tableize.singularize, opts
+    end
+
+    def has_show_link_list(item, opts = {})
+      has_link_for_editing item, opts
+      has_link_for_deleting item, opts
+      has_link_for_indexing item.class.to_s.tableize.singularize, opts
+    end
+
+    def shows_failure_on_invalid_update_of(model)
+      if respond_to?("invalidate_#{model}_form")
+        send("invalidate_#{model}_form")
+      else
+        fill_in "#{model}[name]", :with => ""
+      end
+      click_button "Update"
+      page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Update')]")
+      page.should have_content("error")
+    end
+
+    def shows_failure_on_invalid_create
+      click_button "Create"
+      page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Create')]")
+      page.should have_content("error")
+    end
+
+    def lets_me_edit_the(item_name)
+      eval %{
+    @#{item_name} = factory_build item_name
+    fill_in_#{item_name}_details
+    click_button "Update"
+    refetch(item_name)
+    has_#{item_name}_details
+    }
+    end
+
+    def create(item_name)
+      eval %{
+    puts "building"
+    @#{item_name} = factory_build :#{item_name}
+    puts "responding" + @home.inspect
+    if respond_to? :before_#{item_name}_create
+      before_#{item_name}_create
+    end
+    puts "ran before"
+    fill_in_#{item_name}_details
+    puts "filled in details"
+    click_button "Create"
+    puts "created"
+    }
+    end
+
+
+    def lets_me_create_the(item_name)
+      eval %{
+      create(:#{item_name})
+      refetch(item_name)
+      if respond_to? :after_#{item_name}_create
+        after_#{item_name}_create
+      end
+      has_#{item_name}_details
+      has_show_link_list(@#{item_name})
+    }
+    end
+
+
+  end
 
   module GeneralHelpers
-    extend ActiveSupport::Concern    
+    extend ActiveSupport::Concern
     def default_factory(name, opts = {})
       Factory name, opts
     end
@@ -33,7 +120,7 @@ module Saki
           before { instance_eval &executable }
           module_eval &block
         end
-      end      
+      end
     end
 
   end
@@ -89,7 +176,7 @@ module Saki
     def has_link_for_indexing(model_type, opts = {})
       href = add_opts "/#{model_type.to_s.tableize}", opts
       has_link href
-    end  
+    end
 
     def should_be_on(page_name)
       current_path = URI.parse(current_url).path
@@ -207,3 +294,4 @@ end
 
 RSpec.configuration.include Saki::GeneralHelpers
 RSpec.configuration.include Saki::AcceptanceHelpers, :type => :acceptance
+RSpec.configuration.include Saki::RestfulPathwayHelpers, :type => :acceptance
