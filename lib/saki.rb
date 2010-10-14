@@ -59,17 +59,12 @@ module Saki
 
     def create(item_name)
       eval %{
-    puts "building"
     @#{item_name} = factory_build :#{item_name}
-    puts "responding" + @home.inspect
     if respond_to? :before_#{item_name}_create
       before_#{item_name}_create
     end
-    puts "ran before"
     fill_in_#{item_name}_details
-    puts "filled in details"
     click_button "Create"
-    puts "created"
     }
     end
 
