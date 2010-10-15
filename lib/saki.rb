@@ -68,6 +68,8 @@ module Saki
     }
     end
 
+    def refetch
+
 
     def lets_me_create_the(item_name)
       eval %{
@@ -81,6 +83,17 @@ module Saki
     }
     end
 
+    def refetch(item_name)
+      eval "@#{item_name} = respond_to?(:refetch_#{item_name}_func) ? refetch_#{item_name}_func : @#{item_name}.class.where(:name => @#{item_name}.name).first"
+    end
+
+    def factory_build(name, hash = {})
+      Factory.build name, hash
+    end
+
+    def factory(name, hash = {})
+      Factory name, hash
+    end
 
   end
 
