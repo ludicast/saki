@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{saki}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nate Kidwell"]
-  s.date = %q{2010-09-19}
+  s.date = %q{2010-10-15}
   s.description = %q{Cucumber scenarios are long and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
   s.email = %q{nate@ludicast.com}
   s.extra_rdoc_files = [
@@ -24,9 +24,11 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/generators/saki/install_generator.rb",
+     "lib/generators/saki/integration_generator.rb",
      "lib/generators/saki/spec_generator.rb",
      "lib/generators/saki/templates/acceptance_helper.rb",
      "lib/generators/saki/templates/acceptance_spec.rb",
+     "lib/generators/saki/templates/full_integration_spec.rb",
      "lib/generators/saki/templates/helpers.rb",
      "lib/saki.rb",
      "saki.gemspec",
