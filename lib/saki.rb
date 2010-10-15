@@ -68,7 +68,6 @@ module Saki
     }
     end
 
-    def refetch
 
 
     def lets_me_create_the(item_name)
