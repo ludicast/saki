@@ -157,7 +157,13 @@ module Saki
     end
 
     def has_link(href)
-      page.should have_xpath("//a[@href='#{href}']")
+      begin
+        page.should have_xpath("//a[@href='#{href}']")
+      rescue
+        onclick = "javascript: window.location='/pages/new';"
+        page.should have_xpath(%{//button[@onclick="#{onclick}"]})
+      end
+
     end
 
     def has_link_for(model, opts = {})
@@ -210,6 +216,15 @@ module Saki
         context "on visiting" do
           before do
             visit get_path(path)
+          end
+          module_eval &block
+        end
+      end
+
+      def visiting_path path, &block
+        context "on visiting" do
+          before do
+            visit (instance_eval &path)
           end
           module_eval &block
         end
