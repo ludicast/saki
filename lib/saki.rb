@@ -2,8 +2,12 @@ require 'rspec/core'
 
 module Saki
   module RestfulPathwayHelpers
-    def shows_in_list(resource, attrs = nil)
-      visit "/#{resource.to_s.pluralize}"
+    def shows_in_list(resource, attrs = nil, parent = nil)
+      if parent
+        visit "/#{parent.class.to_s.tableize}/#{parent.id}/#{resource.to_s.pluralize}"        
+      else
+        visit "/#{resource.to_s.pluralize}"
+      end
       resource_instance = eval "@#{resource}"
       if attrs
         attrs.each do |attr|
@@ -14,7 +18,7 @@ module Saki
       else
         page.should have_content(resource_instance.name)
       end
-      has_index_link_list(resource_instance)
+      has_index_link_list(resource_instance, {:parent => parent})
     end
 
     def has_index_link_list(item, opts = {})
@@ -42,7 +46,9 @@ module Saki
     end
 
     def shows_failure_on_invalid_create
+      puts "Here is the more #{page.body}>>>>>>>>"
       click_button "Create"
+      puts "<<<<<<<Here is the info #{page.body}"
       page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Create')]")
       page.should have_content("error")
     end
@@ -70,7 +76,7 @@ module Saki
 
 
 
-    def lets_me_create_the(item_name)
+    def lets_me_create_the(item_name, opts = {})
       eval %{
       create(:#{item_name})
       refetch(item_name)
@@ -78,8 +84,9 @@ module Saki
         after_#{item_name}_create
       end
       has_#{item_name}_details
-      has_show_link_list(@#{item_name})
+      
     }
+      has_show_link_list(eval("@#{item_name}"), opts)
     end
 
     def refetch(item_name)
@@ -159,8 +166,8 @@ module Saki
     def has_link(href)
       begin
         page.should have_xpath("//a[@href='#{href}']")
-      rescue
-        onclick = "javascript: window.location='/pages/new';"
+      rescue Exception => e
+        onclick = "javascript: window.location='#{href}';"
         page.should have_xpath(%{//button[@onclick="#{onclick}"]})
       end
 
@@ -272,7 +279,8 @@ class RSpec::Core::ExampleGroup
         parse_opts = lambda {|link , opts, context|
           opts ||= {}
           if opts[:parent]
-            "/#{opts[:parent].to_s.pluralize}/#{(context.instance_variable_get('@' + opts[:parent].to_s)).id}" + link
+            parent = context.instance_variable_get('@' + opts[:parent].to_s)
+            "/#{parent.class.to_s.tableize}/#{parent.id}" + link
           else
             link
           end
