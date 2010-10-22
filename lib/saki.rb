@@ -46,9 +46,7 @@ module Saki
     end
 
     def shows_failure_on_invalid_create
-      puts "Here is the more #{page.body}>>>>>>>>"
       click_button "Create"
-      puts "<<<<<<<Here is the info #{page.body}"
       page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Create')]")
       page.should have_content("error")
     end
