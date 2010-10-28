@@ -1,29 +1,19 @@
 module Saki
   module RspecExampleGroupOverrides  
     extend ActiveSupport::Concern
+
+
     module ClassMethods
       def method_missing(methId, *args)
-        parse_opts = lambda {|link , opts, context|
-          opts ||= {}
-          if opts[:parent]
-            parent = context.instance_variable_get('@' + opts[:parent].to_s)
-            "/#{parent.class.to_s.tableize}/#{parent.id}" + link
-          else
-            link
-          end
-        }
-
         str = methId.id2name
         if str.match /new_(.*)_path/
-            puts "matched new"
              lambda { |context|
-               parse_opts.call "/#{$1.pluralize}/new", args.first, context
+               parse_link_opts.call "/#{$1.pluralize}/new", args.first, context
              }
         elsif str.match /edit_(.*)_path/
             lambda { |context|
-            puts "matched edit"
                 model = context.instance_variable_get "@#{$1}"
-                parse_opts.call "/#{model.class.to_s.tableize}/#{model.id}/edit", args.first, context
+                parse_link_opts.call "/#{model.class.to_s.tableize}/#{model.id}/edit", args.first, context
             }
         elsif str.match /(.*)_path/
           pluralized = $1.pluralize
@@ -32,12 +22,25 @@ module Saki
           else
             lambda { |context|
                 model = context.instance_variable_get "@#{$1}"
-                parse_opts.call "/#{model.class.to_s.tableize}/#{model.id}", args.first, context
+                parse_link_opts.call "/#{model.class.to_s.tableize}/#{model.id}", args.first, context
             }
           end
         else
           super(methId, [])
         end
+      end
+
+private
+      def parse_link_opts
+        lambda {|link , opts, context|
+          opts ||= {}
+          if opts[:parent]
+            parent = context.instance_variable_get('@' + opts[:parent].to_s)
+            "/#{parent.class.to_s.tableize}/#{parent.id}" + link
+          else
+            link
+          end
+        }
       end
 
     end
