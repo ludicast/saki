@@ -1,5 +1,8 @@
-class RSpec::Core::ExampleGroup
-    def self.method_missing(methId, *args)
+module Saki
+  module RspecExampleGroupOverrides  
+    extend ActiveSupport::Concern
+    module ClassMethods
+      def method_missing(methId, *args)
         parse_opts = lambda {|link , opts, context|
           opts ||= {}
           if opts[:parent]
@@ -12,11 +15,13 @@ class RSpec::Core::ExampleGroup
 
         str = methId.id2name
         if str.match /new_(.*)_path/
+            puts "matched new"
              lambda { |context|
                parse_opts.call "/#{$1.pluralize}/new", args.first, context
              }
         elsif str.match /edit_(.*)_path/
             lambda { |context|
+            puts "matched edit"
                 model = context.instance_variable_get "@#{$1}"
                 parse_opts.call "/#{model.class.to_s.tableize}/#{model.id}/edit", args.first, context
             }
@@ -33,8 +38,14 @@ class RSpec::Core::ExampleGroup
         else
           super(methId, [])
         end
-   end
+      end
+
+    end
+
+  end
 end
+
+RSpec::Core::ExampleGroup.send :include, Saki::RspecExampleGroupOverrides
 
 module RSpec::Core::ObjectExtensions
   def integrate(*args, &block)
