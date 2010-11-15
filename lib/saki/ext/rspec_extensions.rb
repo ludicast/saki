@@ -1,8 +1,7 @@
 module Saki
   module RspecExampleGroupOverrides  
     extend ActiveSupport::Concern
-
-
+    
     module ClassMethods
       def method_missing(methId, *args)
         str = methId.id2name
@@ -26,7 +25,7 @@ module Saki
             }
           end
         else
-          super(methId, [])
+          super
         end
       end
 

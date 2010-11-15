@@ -100,12 +100,13 @@ module Saki
 
 
       def add_opts(link, opts, context)
-        if opts[:parent]
+
+       if opts[:parent]
           "/#{opts[:parent].to_s.pluralize}/#{(context.instance_variable_get('@' + opts[:parent].to_s)).id}" + link
-        else
+       else
           link
-        end
-      end
+       end
+     end
 
       def edit_path_for(resource, opts = {})
         lambda do |context|

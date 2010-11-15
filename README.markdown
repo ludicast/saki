@@ -41,6 +41,14 @@ The only assumption is that you are using factories instead of fixtures.  You al
 
     with_existing :user, :state => "happy" do...
 
+In cases where you would like to indicate ownership, you may use `that_has_a` or `that_has_an` to indicate that your object belongs to an object from your outer `with_existing`.  For example:
+
+    with_existing :user do
+        that_has_an :article do
+            that_has_a :comment do
+
+creates a user with an article in its "articles" collection, and adds to that article's "comments" collection a new comment.           
+
 `with_signed_in` is similar to `with_existing` but after creating the object it passes it into a `sign_in` method:
 
     with_signed_in :admin do...
