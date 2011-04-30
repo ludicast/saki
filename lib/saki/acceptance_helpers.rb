@@ -16,7 +16,7 @@ module Saki
 
     def add_opts(link, opts = {})
       if opts[:parent]
-        link = "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].id}" + link
+        link = "/#{opts[:parent].class.to_s.tableize}/#{opts[:parent].to_param}" + link
       end
       if opts[:format]
         link = link + ".#{opts[:format]}"
@@ -35,17 +35,17 @@ module Saki
     end
 
     def has_link_for(model, opts = {})
-      href = add_opts "/#{model.class.to_s.tableize}/#{model.id}", opts
+      href = add_opts "/#{model.class.to_s.tableize}/#{model.to_param}", opts
       page.should have_xpath("//a[@href='#{href}' and not(@rel)]")
     end
 
     def has_link_for_editing(model, opts = {})
-      href = add_opts "/#{model.class.to_s.tableize}/#{model.id}/edit", opts
+      href = add_opts "/#{model.class.to_s.tableize}/#{model.to_param}/edit", opts
       has_link href
     end
 
     def has_link_for_deleting(model, opts = {})
-      href = add_opts "/#{model.class.to_s.tableize}/#{model.id}", opts
+      href = add_opts "/#{model.class.to_s.tableize}/#{model.to_param}", opts
       page.should have_xpath("//a[@href='#{href}' and @data-method='delete']")
     end
 
@@ -102,7 +102,7 @@ module Saki
       def add_opts(link, opts, context)
 
        if opts[:parent]
-          "/#{opts[:parent].to_s.pluralize}/#{(context.instance_variable_get('@' + opts[:parent].to_s)).id}" + link
+          "/#{opts[:parent].to_s.pluralize}/#{(context.instance_variable_get('@' + opts[:parent].to_s)).to_param}" + link
        else
           link
        end
@@ -110,13 +110,13 @@ module Saki
 
       def edit_path_for(resource, opts = {})
         lambda do |context|
-          add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).id}/edit", opts, context
+          add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).to_param}/edit", opts, context
         end
       end
 
       def show_path_for(resource, opts = {})
         lambda do |context|
-          add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).id}", opts, context
+          add_opts "/#{resource.to_s.pluralize}/#{(context.instance_variable_get('@' + resource.to_s)).to_param}", opts, context
         end
       end
 

@@ -2,6 +2,12 @@ module Saki
   module RspecExampleGroupOverrides  
     extend ActiveSupport::Concern
     
+    module InstanceMethods
+      def method_missing(methId, *args)
+        instance_variable_get "@#{methId}"
+      end
+    end
+    
     module ClassMethods
       def method_missing(methId, *args)
         str = methId.id2name
@@ -11,8 +17,8 @@ module Saki
              }
         elsif str.match /edit_(.*)_path/
             lambda { |context|
-                model = context.instance_variable_get "@#{$1}"
-                parse_link_opts "/#{model.class.to_s.tableize}/#{model.id}/edit", args.first, context
+                model = context.send "#{$1}"
+                parse_link_opts "/#{model.class.to_s.tableize}/#{model.to_param}/edit", args.first, context
             }
         elsif str.match /(.*)_path/
           pluralized = $1.pluralize
@@ -20,8 +26,8 @@ module Saki
             lambda { |context|  parse_link_opts "/#{$1}", args.first, context }
           else
             lambda { |context|
-                model = context.instance_variable_get "@#{$1}"
-                parse_link_opts "/#{model.class.to_s.tableize}/#{model.id}", args.first, context
+                model = context.send "#{$1}"
+                parse_link_opts "/#{model.class.to_s.tableize}/#{model.to_param}", args.first, context
             }
           end
         else
@@ -34,14 +40,12 @@ private
         opts ||= {}
         if opts[:parent]
           parent = context.instance_variable_get('@' + opts[:parent].to_s)
-          "/#{parent.class.to_s.tableize}/#{parent.id}" + link
+          "/#{parent.class.to_s.tableize}/#{parent.to_param}" + link
         else
           link
         end
       end
-
     end
-
   end
 end
 

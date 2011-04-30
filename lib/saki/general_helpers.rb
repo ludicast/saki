@@ -12,9 +12,12 @@ module Saki
     module ClassMethods
       def with_existing resource, opts={}, &block
         context "with exisiting #{resource}" do
+          define_method resource do
+            eval "@#{resource}"
+          end
           before do
             eval %{
-               @___current_resource = @#{resource} = default_factory(resource, opts)
+              @___current_resource = @#{resource} = default_factory(resource, opts)
             }
           end
           module_eval &block

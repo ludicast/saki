@@ -2,7 +2,7 @@ module Saki
   module RestfulPathwayHelpers
     def shows_in_list(resource, attrs = nil, parent = nil)
       if parent
-        visit "/#{parent.class.to_s.tableize}/#{parent.id}/#{resource.to_s.pluralize}"
+        visit "/#{parent.class.to_s.tableize}/#{parent.to_param}/#{resource.to_s.pluralize}"
       else
         visit "/#{resource.to_s.pluralize}"
       end
@@ -63,6 +63,9 @@ module Saki
     def create(item_name)
       eval %{
         @#{item_name} = factory_build :#{item_name}
+        def #{item_name}
+          @#{item_name}
+        end
         if respond_to? :before_#{item_name}_create
           before_#{item_name}_create
         end
