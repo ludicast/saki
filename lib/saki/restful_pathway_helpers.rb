@@ -39,14 +39,19 @@ module Saki
         fill_in "#{model}[name]", :with => ""
       end
       click_button "Update"
-      page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Update')]")
+      page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Update')]")    
       page.should have_content("error")
     end
 
     def shows_failure_on_invalid_create
       click_button "Create"
+      
       page.should have_xpath("//input[@type='submit' and starts-with(@value, 'Create')]")
-      page.should have_content("error")
+      begin
+        page.should have_content("error")
+      rescue
+        page.should have_xpath("//span[@class='error']")
+      end
     end
 
 
@@ -78,7 +83,7 @@ module Saki
     def lets_me_create_without_links_the(item_name)
       eval %{
         create(:#{item_name})
-        refetch(item_name)
+        refetch(item_name)     
         if respond_to? :after_#{item_name}_create
           after_#{item_name}_create
         end

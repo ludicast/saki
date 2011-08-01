@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/acceptance_helper'
+require File.dirname(__FILE__) + '/request_helper'
 
 integrate "<%= resource_name %> resource" do
 

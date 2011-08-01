@@ -9,7 +9,7 @@ module Rspec
 
       def create_integration_file
         template 'full_integration_spec.rb',
-                 File.join('spec/acceptance', class_path, "#{table_name}_spec.rb")
+                 File.join('spec/request', class_path, "#{table_name}_spec.rb")
       end
       def resource_name
         file_name.tableize.singularize

@@ -95,7 +95,7 @@ or you can do
 
 Obviously the return for this is where you have functions acting as "reusable steps" in the style of Cucumber.  In addition your "before blocks" are more expressive.
 
-Finally, to simplify setting up integration tests, anything you wrap in an `integrate` block (like `describe`) sets the test type to acceptance. This is the default `describe` function of the generators, but feel free to use the regular describe block as long as you set its :type option to :acceptance.
+Finally, we assume that rather than using "describe", you wrap everything in a "feature" block.  This is a Capybara shortcut (taken from Steak), for setting the enclosed specs to a type of `request`.
 
 ## Installation
 
@@ -107,9 +107,9 @@ Then to fill out the directories run:
 
     rails generate saki:install
 
-You can generate new acceptance tests with `rails generate saki:spec SPEC_NAME`.  This automatically generates tests like
+You can generate new request tests with `rails generate saki:spec SPEC_NAME`.  This automatically generates tests like
 
-    require File.dirname(__FILE__) + '/acceptance_helper'
+    require File.dirname(__FILE__) + '/request_helper'
 
     integrate "author resource" do
 
@@ -140,7 +140,7 @@ Then, provided that your integration library is set to :rspec, Saki will create 
 
 ## Why no specs/tests for Saki, oh test guy?
 
-They'll get there :).  Saki is extracted from some spec helpers I used in moving from Cucumber to Steak.  Once I realized they also work as helpers for vanilla RSpec acceptance testing I made them a separate gem.
+They'll get there :).  Saki is extracted from some spec helpers I used in moving from Cucumber to Steak.  Once I realized they also work as helpers for vanilla RSpec request testing I made them a separate gem.
 
 ## Why are there ugly command-line descriptions?
 

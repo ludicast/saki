@@ -26,8 +26,8 @@ Gem::Specification.new do |s|
      "lib/generators/saki/install_generator.rb",
      "lib/generators/saki/integration_generator.rb",
      "lib/generators/saki/spec_generator.rb",
-     "lib/generators/saki/templates/acceptance_helper.rb",
-     "lib/generators/saki/templates/acceptance_spec.rb",
+     "lib/generators/saki/templates/request_helper.rb",
+     "lib/generators/saki/templates/request_spec.rb",
      "lib/generators/saki/templates/full_integration_spec.rb",
      "lib/generators/saki/templates/helpers.rb",
      "lib/saki.rb",
@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Allows terse acceptance testing}
+  s.summary = %q{Allows terse request testing}
   s.test_files = [
     "test/helper.rb",
      "test/test_saki.rb"

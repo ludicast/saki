@@ -26,12 +26,18 @@ module Saki
 
       def that_has_an resource, opts={}, &block
         context "that has a/an #{resource}" do
+
+          define_method resource do
+            eval "@#{resource}"
+          end
           before do
+
             eval %{
               @#{resource} = default_factory(resource, opts)
               @___current_resource.#{resource.to_s.pluralize} << @#{resource}
-              @#{resource}.save!
               @___current_resource.save!
+              @#{resource}.save!
+   
               @___current_resource = @#{resource}
             }
           end

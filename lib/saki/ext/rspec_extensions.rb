@@ -4,7 +4,10 @@ module Saki
     
     module InstanceMethods
       def method_missing(methId, *args)
-        instance_variable_get "@#{methId}"
+        case methId.to_s
+          when /(.*)=/ then instance_variable_set "@#{$1}", args[0]
+          else (instance_variable_defined?("@#{methId}") ? instance_variable_get("@#{methId}") : super(methId, *args))   
+        end
       end
     end
     
@@ -54,7 +57,7 @@ RSpec::Core::ExampleGroup.send :include, Saki::RspecExampleGroupOverrides
 module RSpec::Core::ObjectExtensions
   def integrate(*args, &block)
     args << {} unless args.last.is_a?(Hash)
-    args.last.update :type => :acceptance
+    args.last.update :type => :request
     describe(*args, &block)
   end
 end

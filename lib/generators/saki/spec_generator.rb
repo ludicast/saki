@@ -11,20 +11,20 @@ module Saki
 
     desc <<-DESC
 Description:
-Create an acceptance spec for the feature NAME in the
-'spec/acceptance' folder.
+Create an request spec for the feature NAME in the
+'spec/request' folder.
 
 Example:
 `rails generate saki:spec author`
 
-Creates an acceptance spec for the "author" feature:
-spec/acceptance/author_spec.rb
+Creates an request spec for the "author" feature:
+spec/request/author_spec.rb
 DESC
 
     def manifest
-      empty_directory File.join('spec/acceptance', class_path)
+      empty_directory File.join('spec/request', class_path)
       file_name.gsub!(/_spec$/,"")
-      template 'acceptance_spec.rb', File.join('spec/acceptance', class_path, "#{file_name}_spec.rb")
+      template 'request_spec.rb', File.join('spec/request', class_path, "#{file_name}_spec.rb")
     end
   end
 end

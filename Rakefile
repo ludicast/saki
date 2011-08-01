@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "saki"
-    gem.summary = %Q{Allows terse acceptance testing}
+    gem.summary = %Q{Allows terse request testing}
     gem.description = %Q{Cucumber scenarios are long and confusing sometimes.  Release yourself from the tyranny of client-centered specing!}
     gem.email = "nate@ludicast.com"
     gem.homepage = "http://github.com/ludicast/saki"
