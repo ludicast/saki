@@ -2,14 +2,12 @@ module Saki
   module RspecExampleGroupOverrides  
     extend ActiveSupport::Concern
     
-    module InstanceMethods
       def method_missing(methId, *args)
         case methId.to_s
           when /(.*)=/ then instance_variable_set "@#{$1}", args[0]
           else (instance_variable_defined?("@#{methId}") ? instance_variable_get("@#{methId}") : super(methId, *args))   
         end
       end
-    end
     
     module ClassMethods
       def method_missing(methId, *args)

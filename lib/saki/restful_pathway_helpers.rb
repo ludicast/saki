@@ -30,7 +30,7 @@ module Saki
       has_link_for_editing item, opts
       has_link_for_deleting item, opts
       has_link_for_indexing item.class.to_s.tableize.singularize, opts
-    end
+		end
 
     def shows_failure_on_invalid_update_of(model)
       if respond_to?("invalidate_#{model}_form")
@@ -93,7 +93,7 @@ module Saki
     
 
     def lets_me_create_the(item_name, opts = {})
-      lets_me_create_without_links_the(item_name)
+			lets_me_create_without_links_the(item_name)
       has_show_link_list(eval("@#{item_name}"), opts)
     end
 
